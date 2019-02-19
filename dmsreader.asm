@@ -1,21 +1,12 @@
 !cpu 6502
-!to "build/dmsreader",cbm    ; output file
-*=$1000
+;!to "build/dmsreader",cbm    ; output file
+*=$CE00
 ;
 ; ---- Code
 ;
-LDX #$00
-L_1002:
-LDA $1020,X
-STA $CE00,X
-LDA $1070,X
-STA $CF00,X
-INX
-BNE L_1002
-RTS
-
+; We're going to use kernal functions to read/write to disk.
 ; http://sta.c64.org/cbm64krnfunc.html
-*=$1020
+*=$CE00
 ; SETLFS. Set file parameters.
 ; Input: A = Logical number; X = Device number; Y = Secondary address.
 LDA #$01
@@ -42,7 +33,7 @@ LDY $FC
 JSR $FFD8
 RTS
 
-*=$1060
+*=$CE60
 EOR $442E
 EOR $0053
 BRK
@@ -55,6 +46,7 @@ BRK
 BRK
 BRK
 BRK
+*=$CF00
 LDA #$10
 STA $FC
 LDA #$00
@@ -72,6 +64,15 @@ NOP
 NOP
 NOP
 NOP
+
+; Open channel 5 for reading, and then read data from it.
+; Use indirect indexed addressing (https://www.c64-wiki.com/wiki/Indirect-indexed_addressing)
+; to write data to $1000 onwards, through the locations $FB/$FC.
+; At the end of the loop we have written 255 bytes so increment $FC
+; Turn off BASIC and other ROMs to write data to RAM.
+; It also writes the data to the screen at $0400,Y to show progress.
+; CHKIN. Define file as default input. (Must call OPEN beforehands.)
+; Input: X = Logical number.
 LDX #$05
 JSR $FFC6
 ; CHRIN. Read byte from default input (for keyboard, read a line from the screen). (If not keyboard, must call OPEN and CHKIN beforehands.)
@@ -81,17 +82,16 @@ JSR $FFC6
 LDY #$00
 L_108C:
 JSR $FFCF
-LDX #$36
-STX $01
+LDX #$36 ; 0011 0110
+STX $01 ; Turn off all ROMs http://sta.c64.org/cbm64mem.html
 STA ($FB),Y
 STA $0400,Y
-
 ; $DC01 Port B, keyboard matrix rows and joystick #1.
 L_1098:
 LDA $DC01
 AND #$10
 BEQ L_1098
-LDX #$37
+LDX #$37 ; Turn ROMs on again.
 STX $01
 INY
 BNE L_108C
@@ -147,33 +147,3 @@ BRK
 BRK
 ORA ($00,X)
 BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-
