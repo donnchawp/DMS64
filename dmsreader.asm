@@ -33,19 +33,10 @@ LDY $FC
 JSR $FFD8
 RTS
 
-*=$CE60
-EOR $442E
-EOR $0053
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
-BRK
+; name used to save the DMS files.
+*=$CE40
+!byte $4d, $2e, $44, $4d, $53, $00
+
 *=$CF00
 LDA #$10
 STA $FC
@@ -86,11 +77,6 @@ LDX #$36 ; 0011 0110
 STX $01 ; Turn off all ROMs http://sta.c64.org/cbm64mem.html
 STA ($FB),Y
 STA $0400,Y
-; $DC01 Port B, keyboard matrix rows and joystick #1.
-L_1098:
-LDA $DC01
-AND #$10
-BEQ L_1098
 LDX #$37 ; Turn ROMs on again.
 STX $01
 INY

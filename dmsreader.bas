@@ -1,5 +1,5 @@
 2 if peek( 52769 ) = 216 or lo = 1 then goto 4: rem #CE21 == #D8
-3 lo = 1: load "dmsread.asm", 8, 1
+3 na = 0: lo = 1: load "dmsread.asm", 8, 1
 4 poke 53280, 0: poke 53281, 0: print chr$( 8 ): print "{clr}{white}   dms 64 reader by xeer/ozone"
 5 input "source device number(return for 8)"; sd
 6 input "dest device number(return for 8)"; dd
@@ -30,8 +30,9 @@
 100 if tr < 33 then goto 110
 101 print "Flip dest disk!": gosub1000
 110 if sd = dd then print "{home}{down}{down}{down}{down}{down}{down}{down}{down}  insert dest disk and press space": gosub1000
-130 poke 52800, name+65 : sys 52736
+130 poke 52800, na+65 : sys 52736: rem #CE40, #CE00
 140 if sd = dd then print "{up}    insert source disk and press space": gosub1000
+145 na = na + 1;
 150 goto 10
 190 rem start track, end track, number of sectors in tracks
 200 data 1,3,21,4,6,21,7,9,21,10,12,21,13,15,21,16,17,21
