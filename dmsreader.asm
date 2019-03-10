@@ -37,7 +37,7 @@ file_start = $1000
 
         LDA #$FD
         LDX #$01
-        LDY $FB
+        LDY $FC
         STY $D020
         JSR $FFD8
         BCS .error
