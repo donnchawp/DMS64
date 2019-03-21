@@ -6,7 +6,7 @@
 12 input"dest device number(return for 8)";dd
 13 print"insert source disk and press space":gosub3000
 14 ifsd=0thensd=8:ifdd=0thendd=8:
-15 na=0:sr=-1:poke52739,sd:gosub1000:poke52800,na+65:sys52992:rem ce03,ce40
+15 na=0:sr=-1:poke52739,sd:gosub1000:poke52800,na+65:sys52992:rem ce03,ce40,cf00
 16 print"{clr}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}if the disk stops in one disk mode,"
 17 print"swap disks and press space!"
 18 print"if the screen flashes then u must use side 2 of the destination disk"
