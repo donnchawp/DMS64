@@ -5,25 +5,28 @@
 11 input"source device number(return for 8)";sd
 12 input"dest device number(return for 8)";dd
 13 print"insert source disk and press space":gosub3000
-14 ifsd=0thensd=8:ifdd=0thendd=8:
+14 ifsd=0thensd=8:ifdd=0thendd=8
 15 na=0:sr=-1:poke52739,sd:gosub1000:poke52800,na+65:sys52992:rem ce03,ce40,cf00
-16 print"{clr}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}if the disk stops in one disk mode,"
-17 print"swap disks and press space!"
-18 print"if the screen flashes then u must use side 2 of the destination disk"
-20 open15,dd,15:open5,dd,5,"#":read tr,et,sc:iftr=-1thengoto50
+16 print"{clr}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}{down}"
+16 print"if the disk stops in one disk mode,swap disks and press space!"
+19 print"if the screen flashes then you must use side 2 of the destination disk"
+20 open15,dd,15:open5,dd,5,"#"
+21 read tr,et,sc
+22 iftr=-1thengoto50
 30 print#15,"u2";5;0;tr;sr
-31 print#15,"b-p";5;0
+31 rem print#15,"b-p";5;0
 32 sys53008:rem cf10
 40 sr=sr+1:ifsr=scthentr=tr+1:sr=0
 41 iftr=(et+1)thensr=0:goto60
 46 goto30
-50 print"finished!":close5:close15:end
+50 close5:close15
+51 print"finished!":end
 60 close5:close15
-100 sr=-1:sd=8:gosub1000
+100 sr=-1:gosub1000
 110 na=na+1:poke52800,na+65:rem ce40
 115 if peek(52800)=76 then gosub4000:rem ce40
 120 gosub1000:sys52992:rem cf00
-140 goto20:
+140 goto20
 200 data 1,3,21,4,6,21,7,9,21,10,12,21,13,15,21,16,17,21
 210 data 18,19,19,20,22,19,23,24,19
 220 data 25,27,18,28,30,18
