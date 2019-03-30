@@ -2,6 +2,8 @@
 ;
 ; ---- Code
 ;
+; Load a DMS file
+;
 *=$ce00
         LDA #$01
         LDX #$09
@@ -19,6 +21,7 @@
 fname: !pet "a.dms"
 fname_end:
 
+; Set up pointer to start of memory
 *=$cf00
         LDA #$10
         STA $FC
@@ -27,6 +30,7 @@ fname_end:
         STA $FF
         RTS
 
+; Write bytes to disk
 *=$cf10
         LDX #$05
         JSR $FFC9
