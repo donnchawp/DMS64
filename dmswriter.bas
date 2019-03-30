@@ -19,7 +19,6 @@
 200 read tr,et,sc
 210 iftr=-1thengoto280
 220 print#15,"u2";5;0;tr;sr
-230 rem print#15,"b-p";5;0
 240 sys53008:rem cf10 write a sector
 250 sr=sr+1:ifsr=scthentr=tr+1:sr=0
 260 iftr=(et+1)thensr=0:goto300
