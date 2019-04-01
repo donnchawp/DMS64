@@ -1,12 +1,12 @@
 10 ifpeek(52757)=213then 40:rem ce15,d5
-30 load"dmswrite.asm",8,1
+30 load"dmswriter.bin",8,1
 40 poke53280,0:poke53281,0:print"{clr}{white}dms 64 write by xeer/ozone"
 50 input"source device number(return for 8)";sd
 60 input"dest device number(return for 8)";dd
 70 print"insert source disk and press space":gosub3000
 80 ifsd=0thensd=8
 90 ifdd=0thendd=8
-100 na=0:sr=-1
+100 na=0:sr=0
 110 poke52739,sd:rem ce03, source disk
 120 sys52736:rem ce00, read a dms file
 130 poke52800,na+65:rem ce40, a.dms
@@ -26,9 +26,9 @@
 280 close5:close15
 290 print"finished!":end
 300 close5:close15
-310 sr=-1:gosub1000
+310 sr=0:gosub1000
 320 na=na+1:poke52800,na+65:rem ce40
-330 if peek(52800)=76 then gosub4000:rem ce40
+330 if peek(52800)=76 then gosub4000:rem ce40, side 2
 340 gosub1000:sys52992:rem cf00
 350 goto180
 360 data 1,3,21,4,6,21,7,9,21,10,12,21,13,15,21,16,17,21
@@ -40,8 +40,10 @@
 1005 sys52736:rem ce00. read a dms file.
 1010 ifsd=ddthengosub3000
 1020 return
-3000 ifpeek(56321)<>239then3000:rem press space
+3000 print "flip disk"
+3001 ifpeek(56321)<>239then3000:rem press space
 3005 return
-4000 poke53280,peek(53280)+1:poke53280,peek(53280)-1:rem flash screen and hit space.
-4004 ifpeek(56321)<>239then4000
+4000 print "insert side 2 of source disk"
+4001 poke53280,peek(53280)+1:poke53280,peek(53280)-1:rem flash screen and hit space.
+4004 ifpeek(56321)<>239then4001
 4005 return
