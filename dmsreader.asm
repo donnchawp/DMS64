@@ -92,4 +92,5 @@ L_108C: JSR $FFCF
         INC $FC
         LDA #$00
         STA $D020
+        JSR $FFCC
         RTS

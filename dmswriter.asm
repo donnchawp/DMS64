@@ -40,12 +40,13 @@ L_108C: LDX #$36
         STX $01
         LDA ($FB),Y
         STA $0400,Y
-        STA $D020
+        STY $0400
+        STY $D020
         LDX #$37
         STX $01
         JSR $FFD2
         INY
         BNE L_108C
         INC $FC
-        INC $D020
+        JSR $FFCC
         RTS
