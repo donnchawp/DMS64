@@ -7,12 +7,14 @@
 *=$ce00
         LDA #$01
         LDX #$09
-        LDY #$01
-        JSR $FFBA
+        LDY #$00  ; load to new address
+        JSR $FFBA ; call SETLFS
         LDA #$05
         LDX #$40
         LDY #$CE
-        JSR $FFBD
+        JSR $FFBD ; call SETNAM
+        LDY #$10
+        LDX #$00
         LDA #$00
         JSR $FFD5
         RTS
