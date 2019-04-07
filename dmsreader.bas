@@ -1,4 +1,4 @@
-2 if peek( 52769 ) = 216 or lo = 1 then goto 4: rem CE21 == D8
+2 if peek( 52736 ) = 169 or lo = 1 then goto 4: rem CE21 == D8
 3 na = 0: lo = 1: load "dmsreader.bin", 8, 1
 4 poke 53280, 0: poke 53281, 0: print chr$( 8 ): print "{clr}{white}   dms 64 reader by xeer/ozone"
 5 input "source device number(return for 8)"; sd
@@ -8,9 +8,8 @@
 9 poke 52748, dd: rem CE03, device for saving to destination disc
 10 print "{clr}"
 11 sys 52992: rem CF00
-12 open 15, sd, 15: rem command channel
-13 open 5, sd, 5, "#": rem data channel
-
+12 open 5, sd, 5, "#": rem data channel
+13 open 15, sd, 15: rem command channel
 14 rem tr: starting disc track to read.
 15 rem et: ending disc track to read.
 16 rem sc: number of sectors in track.
