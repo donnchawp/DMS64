@@ -1,31 +1,84 @@
-# dms64
-Disk Masher 64
+# DMS64 — Disk Masher 64
 
-DMS 64, create images of Commodore 64 disks and split the image into multiple files.
-Copyright Donncha O Caoimh, https://odd.blog/
-Version 1.0 originally written in 1994 but fixed and spread online in Feb 2012
-Announcement post: https://odd.blog/2012/02/22/the-commodore-64-disk-masher-c64-dms/
+A Commodore 64 disk imaging utility. Reads C64 disks into split `.DMS` files and restores them back.
 
-Create a disk image with DMSREADER. You'll need 2 blank disks or 2 D64
-files to write to. Multiple files with the extension .DMS will be created.
+Originally written in 1994, fixed up and released online in February 2012.
+[Announcement post](https://odd.blog/2012/02/22/the-commodore-64-disk-masher-c64-dms/)
 
-Recreate the original disk by using DMSWRITER.
+## Usage
 
-The source code here is a mess and won't compile but I'm currently working on the assembly part of it with ACME assembler, and using Vice petcat to tokenise the BASIC programmes.
+**DMSREADER** — creates a disk image. It reads every track/sector from a source disk and saves the data as multiple `.DMS` files (`a.dms`, `b.dms`, ...) to a destination disk. You need two drives (or two D64 images in an emulator).
 
-How it works:
-reading:
+**DMSWRITER** — restores a disk image. It loads the `.DMS` files and writes the sectors back to a blank disk, recreating the original.
 
-dmsreader loads dmsread.asm which is located at $1000 (4096) if not loaded already.
-It turns the screen black and then asks for source and destination devices.
-SYS 4096 runs the code at $1000 which copies memory to $CE00 and $CF00.
-It sets $CE03 (52739) to the destination drive number and opens a command channel to the source drive. (https://wpguru.co.uk/2014/06/commodore-1541-dos-commands/ https://en.wikipedia.org/wiki/Commodore_DOS)
-It also opens a read channel (5) to the same drive to read tracks directly.
+## Prerequisites
 
-ASM For reading sectors from disk:
-http://codebase64.org/doku.php?id=base:reading_a_sector_from_disk
+Install the following tools (all available via Homebrew on macOS):
 
-Compiled ASM with Acme.
-Install ACME with brew:
-$ brew install acme
+- **[ACME](https://sourceforge.net/projects/acme-crossass/)** — 6502/6510 cross-assembler
+- **[VICE](https://vice-emu.sourceforge.io/)** — provides `petcat` (BASIC tokeniser), `c1541` (disk image tool), and `x64` (C64 emulator)
 
+```
+brew install acme vice
+```
+
+## Building
+
+Build everything (assembles ASM, tokenises BASIC, packages into a D64 disk image):
+
+```
+make all
+```
+
+This produces:
+
+| File | Description |
+|---|---|
+| `dmsreader.bin` | Assembled reader machine code |
+| `dmsreader.prg` | Tokenised reader BASIC loader |
+| `dmswriter.bin` | Assembled writer machine code |
+| `dmswriter.prg` | Tokenised writer BASIC loader |
+| `dmsreader.d64` | D64 disk image containing all four files above |
+
+### Creating the D64 disk image
+
+The `make all` target handles this automatically. Under the hood, `c1541` formats a blank D64 and writes all four `.prg`/`.bin` files onto it:
+
+```
+c1541 -format dmsreader,id d64 dmsreader.d64 \
+  -write dmsreader.prg \
+  -write dmsreader.bin \
+  -write dmswriter.prg \
+  -write dmswriter.bin
+```
+
+### Running in VICE
+
+To build and launch DMSREADER in the VICE emulator:
+
+```
+make dmsreader
+```
+
+### Other targets
+
+```
+make clean      # Remove all build artifacts
+```
+
+## Source files
+
+| File | Role |
+|---|---|
+| `dmsreader.bas` | BASIC loader — prompts for devices, iterates disk geometry, calls ASM |
+| `dmsreader.asm` | Assembly — sector read via KERNAL, SAVE to `.DMS` file |
+| `dmswriter.bas` | BASIC loader — loads `.DMS` files, iterates geometry, calls ASM |
+| `dmswriter.asm` | Assembly — LOAD from `.DMS` file, sector write via KERNAL |
+
+Each tool has a BASIC program that controls the high-level flow (opening drive channels, sending DOS commands to position the drive head) and an assembly routine that handles the byte-level I/O through the C64 KERNAL.
+
+## License
+
+GPLv3. See [LICENSE](LICENSE).
+
+Copyright Donncha O Caoimh — https://odd.blog/
